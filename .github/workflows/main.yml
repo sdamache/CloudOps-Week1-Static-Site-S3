@@ -1,1 +1,28 @@
+##Create actions for deploying the index and styles files to s3 upon a new commit to the main branch
+name: Deploy to S3
+run-name: Deploy to S3
+#Push code after a new commit to the main branch
+on:
+  push:
+    branches:
+      - main
+jobs:
+    deploy:
+        name: Deploy to S3
+        runs-on: ubuntu-latest
+        steps:
+        - name: Checkout
+            uses: actions/checkout@v2
+        - name: Deploy to S3
+            uses: jakejarvis/s3-sync-action@master
+            with:
+            args: --acl public-read --follow-symlinks --delete
+            env:
+            AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+            AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            AWS_REGION: ${{ variables.AWS_DEFAULT_REGION }}
+            SOURCE_DIR: "."
+
+
 
