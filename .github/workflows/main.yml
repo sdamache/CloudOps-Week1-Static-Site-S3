@@ -22,7 +22,7 @@ jobs:
         aws-region: ${{ vars.AWS_DEFAULT_REGION }}
 
     - name: Sync files to S3
-      run: aws s3 sync ./src s3://${{ secrets.AWS_S3_BUCKET }}
+      run: aws s3 sync . s3://${{ secrets.AWS_S3_BUCKET }}
 
 
 
