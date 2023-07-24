@@ -3,26 +3,26 @@ name: Deploy to S3
 
 on:
     push:
-        branches:
-            - main
-
-jobs:
+      branches:
+        - main
+  
+  jobs:
     deploy:
-        runs-on: ubuntu-latest
+      runs-on: ubuntu-latest
+  
+      steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+  
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_DEFAULT_REGION }}
 
-        steps:
-        - name: Checkout code
-            uses: actions/checkout@v2
-
-        - name: Configure AWS credentials
-            uses: aws-actions/configure-aws-credentials@v1
-            with:
-                aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-                aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-                aws-region: ${{ vars.AWS_DEFAULT_REGION }}
-
-        - name: Sync files to S3
-            run: |
+      - name: Sync files to S3
+        run: |
                 if git diff --name-only HEAD^ HEAD | grep -qE 'index\.html|styles\.css'; then
                     aws s3 sync . s3://${{ secrets.AWS_S3_BUCKET }} --exclude "*" --include "index.html" --include "styles.css"
                     echo "Files synced successfully."
